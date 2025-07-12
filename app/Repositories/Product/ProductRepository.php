@@ -21,6 +21,13 @@ class ProductRepository implements ProductRepositoryInterface
         return $this->model->all();
     }
 
+    /**
+     * Find product by ID
+     */
+    public function find($id)
+    {
+        return $this->model->find($id);
+    }
 
     /**
      * Create new product
