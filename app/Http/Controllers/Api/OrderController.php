@@ -23,8 +23,49 @@ class OrderController extends Controller
     }
 
     /**
-     * GET /api/orders
-     * List all orders with their associated products and total price
+     * @OA\Get(
+     *     path="/orders",
+     *     tags={"Orders"},
+     *     summary="Get all orders",
+     *     description="Retrieve a list of all orders with their associated products and total price",
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Orders retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Orders retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(
+     *                         property="products",
+     *                         type="array",
+     *                         @OA\Items(type="integer", example=1),
+     *                         description="Array of product IDs"
+     *                     ),
+     *                     @OA\Property(property="total_price", type="number", example=1529.97),
+     *                     @OA\Property(
+     *                         property="products_details",
+     *                         type="array",
+     *                         @OA\Items(
+     *                             type="object",
+     *                             @OA\Property(property="id", type="integer", example=1),
+     *                             @OA\Property(property="name", type="string", example="Gaming Laptop"),
+     *                             @OA\Property(property="price", type="number", example=1299.99)
+     *                         )
+     *                     ),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
      */
     public function index(): JsonResponse
     {
@@ -42,8 +83,60 @@ class OrderController extends Controller
     }
 
     /**
-     * POST /api/orders
-     * Create a new order with a list of product IDs
+     * @OA\Post(
+     *     path="/orders",
+     *     tags={"Orders"},
+     *     summary="Create new order",
+     *     description="Create a new order with a list of product IDs. Total price is calculated automatically.",
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"products"},
+     *             @OA\Property(
+     *                 property="products",
+     *                 type="array",
+     *                 @OA\Items(type="integer"),
+     *                 example={1, 2, 3},
+     *                 description="Array of product IDs"
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Order created successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Order created successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(
+     *                     property="products",
+     *                     type="array",
+     *                     @OA\Items(type="integer"),
+     *                     example={1, 2, 3}
+     *                 ),
+     *                 @OA\Property(property="total_price", type="number", example=1529.97),
+     *                 @OA\Property(
+     *                     property="products_details",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", example=1),
+     *                         @OA\Property(property="name", type="string", example="Gaming Laptop"),
+     *                         @OA\Property(property="price", type="number", example=1299.99)
+     *                     )
+     *                 ),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=422, description="Validation error"),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
      */
     public function store(StoreOrderRequest $request): JsonResponse
     {

@@ -23,8 +23,34 @@ class ProductController extends Controller
     }
 
     /**
-     * GET /api/products
-     * List all products
+     * @OA\Get(
+     *     path="/products",
+     *     tags={"Products"},
+     *     summary="Get all products",
+     *     description="Retrieve a list of all products",
+     *     security={{"sanctum":{}}},
+     *     @OA\Response(
+     *         response=200,
+     *         description="Products retrieved successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Products retrieved successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="array",
+     *                 @OA\Items(
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="Gaming Laptop"),
+     *                     @OA\Property(property="price", type="number", example=1299.99),
+     *                     @OA\Property(property="created_at", type="string", format="date-time"),
+     *                     @OA\Property(property="updated_at", type="string", format="date-time")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
      */
     public function index(): JsonResponse
     {
@@ -42,8 +68,40 @@ class ProductController extends Controller
     }
 
     /**
-     * POST /api/products
-     * Create a new product (uses StoreProductRequest for validation)
+     * @OA\Post(
+     *     path="/products",
+     *     tags={"Products"},
+     *     summary="Create new product",
+     *     description="Create a new product with name and price",
+     *     security={{"sanctum":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"name","price"},
+     *             @OA\Property(property="name", type="string", example="Gaming Laptop"),
+     *             @OA\Property(property="price", type="number", example=1299.99, description="Price must be greater than 0")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Product created successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Product created successfully"),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=1),
+     *                 @OA\Property(property="name", type="string", example="Gaming Laptop"),
+     *                 @OA\Property(property="price", type="number", example=1299.99),
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="updated_at", type="string", format="date-time")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=422, description="Validation error"),
+     *     @OA\Response(response=401, description="Unauthenticated")
+     * )
      */
     public function store(StoreProductRequest $request): JsonResponse
     {

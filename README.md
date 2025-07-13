@@ -1,61 +1,186 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Order Management System API
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A RESTful API for managing products and orders built with Laravel 12 and Laravel Sanctum for authentication.
 
-## About Laravel
+## 🛠 Technical Stack
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Framework:** Laravel 12
+- **Authentication:** Laravel Sanctum (Bearer Token)
+- **Database:** MySQL
+- **Testing:** PHPUnit Feature Tests
+- **API Documentation:** Swagger/OpenAPI
+- **Architecture:** Repository/Service Pattern
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## 🚀 Installation
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Prerequisites
+- PHP 8.2+
+- Composer
+- MySQL 8.0+
 
-## Learning Laravel
+### Setup
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+```bash
+# 1. Clone repository
+git clone https://github.com/gdarahazem/order-management-system.git
+cd order-management-system
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+# 2. Install dependencies
+composer install
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+# 3. Environment setup
+cp .env.example .env
+php artisan key:generate
 
-## Laravel Sponsors
+# 4. Configure database in .env
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=order_management
+DB_USERNAME=root
+DB_PASSWORD=your_password
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+# 5. Run migrations
+php artisan migrate
 
-### Premium Partners
+# 6. Start server
+php artisan serve
+```
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## 📋 API Endpoints
 
-## Contributing
+### Authentication
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/api/auth/register` | Register new user |
+| POST | `/api/auth/login` | Login user |
+| POST | `/api/auth/logout` | Logout user |
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Products (Protected)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/products` | Get all products |
+| POST | `/api/products` | Create new product |
 
-## Code of Conduct
+### Orders (Protected)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/orders` | Get all orders with product details |
+| POST | `/api/orders` | Create new order |
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 🔐 Authentication
 
-## Security Vulnerabilities
+This API uses **Laravel Sanctum** for token-based authentication. All product and order endpoints require **Bearer Token** authentication.
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### Quick Start
+```bash
+# 1. Register user
+curl -X POST http://localhost:8000/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"name":"John Doe","email":"john@example.com","password":"password123","password_confirmation":"password123"}'
 
-## License
+# 2. Get token from response and use in other requests
+curl -X GET http://localhost:8000/api/products \
+  -H "Authorization: Bearer YOUR_TOKEN_HERE"
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## 📱 Postman Collection
+
+The project includes a **complete Postman collection** for easy API testing.
+
+### Setup Postman Environment
+
+1. **Import Collection:**
+   - Import `postman_collection.json` from project root
+   - Collection includes all endpoints with automatic token management
+
+2. **Create Environment:**
+   - **Environment Name:** `Order Management API`
+   - **Variables:**
+     ```
+     base_url: http://localhost:8000/api
+     auth_token: (put the token returned by login)
+     ```
+
+## 🧪 Testing
+
+Run the feature tests:
+
+```bash
+# Run all tests
+php artisan test
+
+# Run specific test files
+php artisan test tests/Feature/AuthApiTest.php
+php artisan test tests/Feature/ProductApiTest.php
+php artisan test tests/Feature/OrderApiTest.php
+```
+
+**Test Coverage:**
+- ✅ User Registration & Login
+- ✅ Product Management (GET/POST)
+- ✅ Order Management (GET/POST)
+- ✅ Authentication & Validation
+
+## 📚 API Documentation
+
+**Swagger Documentation:** `http://localhost:8000/api/documentation`
+
+Interactive API documentation with:
+- All endpoints documented
+- Request/response examples
+- Built-in authentication
+- Try-it-out functionality
+
+
+## 🔧 API Usage Examples
+
+### Create Product
+```json
+POST /api/products
+{
+    "name": "Gaming Laptop",
+    "price": 1299.99
+}
+```
+
+### Create Order
+```json
+POST /api/orders
+{
+    "products": [1, 2, 3]
+}
+```
+
+**Response includes:**
+- Product IDs array
+- **Auto-calculated total price**
+- Complete product details
+
+## 📄 Project Structure
+
+```
+app/
+├── Http/Controllers/Api/     # API Controllers
+├── Services/                 # Business Logic
+├── Repositories/            # Data Access Layer
+├── Http/Requests/           # Validation
+└── Traits/                  # Reusable Components
+
+tests/Feature/               # API Integration Tests
+```
+
+## 🛠 Troubleshooting
+
+**Clear caches if needed:**
+```bash
+php artisan config:clear
+php artisan route:clear
+php artisan cache:clear
+```
+
+**Database issues:**
+- Ensure MySQL is running
+- Verify database credentials in `.env`
+- Run `php artisan migrate`
+
